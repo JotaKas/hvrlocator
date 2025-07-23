@@ -10,8 +10,6 @@ import csv
 import time
 #from Bio.SeqIO.QualityIO import FastqGeneralIterator
 
-
-
 # Define hypervariable regions globally
 regions = [
     (1, 0, 96),
