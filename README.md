@@ -12,7 +12,7 @@ Go to <https://cloud.sylabs.io/library/jsaraiva/repo/hvrlocator>
 
 Paste the following command in your terminal:
 ```
-singularity pull --arch amd64 library://jsaraiva/repo/hvrlocator:hvrlocator
+singularity pull --arch amd64 library://jsaraiva/repo/hvrlocator:hvr
 ```
 
 ## Usage
@@ -58,6 +58,8 @@ To process a FASTA file containing ASV sequences:
 hvreglocator fasta -f path/to/your/asv_sequences.fasta --ecoli /path/to/ecoli.fa -o /path/to/output/folder
 ```
 
+### To modify the coverage threshold (default = 0.6) add the "*-t*" flag at the end pf the command (e.g. -t 0.7)" 
+
 ## Local Installation (Alternative)
 
 To install HVR Locator locally, follow these steps:
@@ -65,20 +67,21 @@ To install HVR Locator locally, follow these steps:
 1. Create a new conda environment:
 
 ```bash
-mamba create --prefix /global/apps/hvreglocator/0.2 -y -c bioconda python=3.9 sra-tools mafft fastp biopython numpy scipy vsearch
+mamba create -n <ENV_NAME> -y -c bioconda -c conda-forge python=3.9 sra-tools fastp biopython numpy scipy vsearch
 ```
+***Note***: Replace the **ENV_NAME** with a name of your choosing.
 
 2. Activate the environment, clone the repository, and install the package:
 
 ```bash
-source activate /global/apps/hvreglocator/0.2 && \
-cd /global/apps/hvreglocator/0.2 && \
-git clone https://github.com/joao1980/hvrlocator.git && \
+source activate <ENV_NAME> && \
+cd <PATH to FOLDER WHERE YOU WANT THE GITHUB REPO TO BE LOCATED> && \
+git clone https://github.com/fbcorrea/hvrlocator && \
 cd hvrlocator && \
 pip install -e .
+mamba install -c bioconda -c conda-forge mafft scikit-learn==1.1.3 joblib
 ```
 
-Note: Replace the GitHub URL with the appropriate URL for your repository.
 
 ## Usage
 
@@ -89,21 +92,26 @@ HVRegLocator can process both SRA accession numbers and FASTA files containing A
 To process an SRA run:
 
 ```bash
-hvreglocator sra -r SRR1585194
+hvrlocator sra -r SRR1585194 -o /path/to/output_folder
 ```
 
 You can specify the location of the E. coli reference file if it's not in the default location:
 
 ```bash
-hvreglocator sra -r SRR1585194 --ecoli /path/to/ecoli.fa
+hvrlocator sra -r SRR1585194 --ecoli /path/to/ecoli.fa -o /path/to/output_folder
 ```
 
+If you want:
+
+```bash
+hvrlocator sra -r SRR1585194 --ecoli /path/to/ecoli.fa -o /path/to/output_folder
+```
 ### Processing ASV FASTA Files
 
 To process a FASTA file containing ASV sequences:
 
 ```bash
-hvreglocator fasta -f path/to/your/asv_sequences.fasta
+hvrlocator fasta -f path/to/your/asv_sequences.fasta
 ```
 
 ## Output
@@ -119,10 +127,13 @@ The following columns are shown in the output table:
 **•	Warnings:** Alerts about low coverage regions.<br/>
 **•	Cov_V1 to Cov_V9:** Coverage values (0-1) for each HV region.<br/>
 
+## Random Forest Model
+
+A detailed description of the Random Forest model generation is available [here](https://github.com/fbcorrea/hvrlocator/blob/main/Random%20Forest%20Model%20for%20Primer%20Presence%20Prediction.docx).
 
 ## Project Structure
 
-- `hvreglocator.py`: The main script that handles both SRA and FASTA processing.
+- `hvrlocator.py`: The main script that handles both SRA and FASTA processing.
 - `setup.py`: Used for installing the package.
 
 ## Possible Errors and Troubleshooting
